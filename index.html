@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Martins guess the prompt game</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="introduction-page">
+    <h1>Martins guess the prompt game</h1>
+    <h3>Welcome!</h3>
+    <p>
+      In this game, you need to guess the prompt that generated the shown picture word by word. The prompt starts hidden, and as you guess correctly, words will be revealed one by one. Try to figure out the full prompt based on the image and your guesses!
+    </p>
+    <p>
+      <b>After 10 false guesses, you get a tip!</b>
+    </p>
+    <button id="startGame">Start Game</button>
+  </div>
+
+  <div id="game-container" style="display: none;">
+    <h1>Martins guess the prompt game</h1>
+    <h3>Guess which prompt generated this image</h3>
+    <div id="promptContainer">
+      <span id="promptPrefix">create a picture of</span>
+      <span id="revealedWords"></span>
+    </div>
+    <div id="imageContainer">
+      <img id="promptImage" src="" alt="Prompt Image">
+    </div>
+    <div>
+      <input type="text" id="guessInput" placeholder="Type your guess here" />
+      <button id="submitGuess">Submit Guess</button>
+    </div>
+  </div>
+
+  <script>
+    const startGameButton = document.getElementById('startGame');
+    const introductionPage = document.getElementById('introduction-page');
+    const gameContainer = document.getElementById('game-container');
+
+    startGameButton.addEventListener('click', () => {
+      introductionPage.style.display = 'none';
+      gameContainer.style.display = 'block';
+      loadPrompt(currentPromptIndex); // Ensure the game starts by loading the first prompt
+    });
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
