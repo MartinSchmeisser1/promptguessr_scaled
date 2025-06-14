@@ -1,129 +1,88 @@
+const startGameButton = document.getElementById('startGame');
+const introductionPage = document.getElementById('introduction-page');
+const gameContainer = document.getElementById('game-container');
+
 const guessInput = document.getElementById("guessInput");
 const submitGuess = document.getElementById("submitGuess");
 const revealedWordsElement = document.getElementById("revealedWords");
 const promptImage = document.getElementById("promptImage");
 
-let prompts = []; // Loaded from prompts.json
+let prompts = [];
 let currentPromptIndex = 0;
 let revealedWords = [];
-let remainingWords = [];
-let wrongGuessCounter = 0; // Counter for consecutive wrong guesses
 
+// Connect to Socket.IO server
+const socket = io();
 
-// Fetch prompts.json
-fetch('./prompts.json')
-  .then(response => response.json())
-  .then(data => {
-    prompts = shuffleArray(data); // Shuffle the prompts array
-    loadPrompt(currentPromptIndex);
-  })
-  .catch(error => console.error("Error loading prompts.json:", error));
+socket.on('connect', () => {
+  console.log('Connected to server');
+});
 
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+socket.on('gameState', (state) => {
+  console.log('Game state received:', state);
+  currentPromptIndex = state.currentPromptIndex;
+  prompts = state.prompts;
+  revealedWords = state.revealedWords;
+  updateUI();
+});
+
+socket.on('wow', () => {
+  displayWowImage();
+});
+
+socket.on('wrong', () => {
+  displayWrongMessage();
+});
+
+socket.on('gameOver', (message) => {
+  revealedWordsElement.textContent = message;
+  guessInput.disabled = true;
+  submitGuess.disabled = true;
+});
+
+function updateUI() {
+  if (!prompts || prompts.length === 0) {
+    console.warn("Prompts data is empty or not yet loaded.");
+    return;
   }
-  return array;
-}
+  if (currentPromptIndex >= prompts.length) {
+    revealedWordsElement.textContent = "Congratulations! You've completed all prompts!";
+    guessInput.disabled = true;
+    submitGuess.disabled = true;
+    return;
+  }
+
+  const prompt = prompts[currentPromptIndex];
+  if (!prompt) {
+    console.warn(`No prompt found at index ${currentPromptIndex}`);
+    return;
+  }
+
+  revealedWords = prompts[currentPromptIndex].revealedWords;
+  const remainingWords = prompt.prompt.toLowerCase().split(" ");
 
 
-// Load the current prompt
-function loadPrompt(index) {
-  const prompt = prompts[index];
-  // Split the single prompt string into individual words
-  remainingWords = prompt.prompt.toLowerCase().split(" "); // Normalize all words to lowercase
-  revealedWords = Array(remainingWords.length).fill("_"); // Create underscores for each word
   updateRevealedWords();
-
-  // Set the image source
   promptImage.src = prompt.image;
 }
 
-// Update the revealed words display
 function updateRevealedWords() {
-  revealedWordsElement.innerHTML = ""; // Clear previous content
+  revealedWordsElement.innerHTML = "";
 
   revealedWords.forEach((word, index) => {
     const span = document.createElement("span");
     if (word === "_") {
-      span.textContent = "_".repeat(remainingWords[index].length); // Display underscores based on word length
+      span.textContent = "_".repeat(word.length);
       span.classList.add("unrevealed-word");
     } else {
-      span.textContent = word; // Display revealed word
+      span.textContent = word;
     }
     revealedWordsElement.appendChild(span);
-    revealedWordsElement.appendChild(document.createTextNode(" ")); // Add space between words
+    revealedWordsElement.appendChild(document.createTextNode(" "));
   });
 
-  // Add a small space between "of" and the first unrevealed word
   const promptPrefix = document.getElementById("promptPrefix");
   promptPrefix.innerHTML = "create a picture of&nbsp;";
-}
-
-// Check if the guess is correct
-function checkGuess(guess) {
-  const wordIndex = remainingWords.indexOf(guess); // Check if the guessed word exists in the remaining words
-  if (wordIndex !== -1) {
-    revealedWords[wordIndex] = remainingWords[wordIndex]; // Reveal the guessed word
-    remainingWords[wordIndex] = null; // Mark the word as guessed
-    updateRevealedWords();
-
-    // Display "WOW" image at a random position
-    displayWowImage();
-
-    // Clear the input field
-    guessInput.value = "";
-
-    wrongGuessCounter = 0; // Reset the wrong guess counter
-
-    // Check if all words have been guessed
-    if (remainingWords.every(word => word === null)) {
-      guessInput.disabled = true;
-      submitGuess.disabled = true;
-
-      setTimeout(() => {
-        currentPromptIndex++;
-        if (currentPromptIndex < prompts.length) {
-          loadPrompt(currentPromptIndex);
-          guessInput.disabled = false;
-          submitGuess.disabled = false;
-          guessInput.value = ""; // Clear input for the next round
-        } else {
-          revealedWordsElement.textContent = "Congratulations! You've completed all prompts!";
-        }
-      }, 3000);
-    }
-  } else {
-    // Display "WRONG" message at a random position
-    displayWrongMessage();
-
-    // Clear the input field
-    guessInput.value = "";
-
-    wrongGuessCounter++; // Increment the wrong guess counter
-    if (wrongGuessCounter >= 10) {
-      revealRandomWord(); // Reveal a random word if 10 wrong guesses in a row
-      wrongGuessCounter = 0; // Reset the counter
-    }
-  }
-}
-
-// Function to reveal a random word
-function revealRandomWord() {
-  const unrevealedIndices = remainingWords.reduce((acc, word, index) => {
-    if (word !== null) {
-      acc.push(index);
-    }
-    return acc;
-  }, []);
-
-  if (unrevealedIndices.length > 0) {
-    const randomIndex = unrevealedIndices[Math.floor(Math.random() * unrevealedIndices.length)];
-    revealedWords[randomIndex] = remainingWords[randomIndex];
-    remainingWords[randomIndex] = null;
-    updateRevealedWords();
-  }
 }
 
 // Function to display "WOW" image
@@ -173,17 +132,21 @@ function displayWrongMessage() {
   }, 1000);
 }
 
-// Add event listener for the "Submit Guess" button
 submitGuess.addEventListener("click", () => {
   const guess = guessInput.value.trim().toLowerCase();
   if (guess) {
-    checkGuess(guess);
+    socket.emit('guess', guess);
+    guessInput.value = "";
   }
 });
 
-// Add event listener for the "Enter" key
 guessInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
-    submitGuess.click(); // Trigger the button's click event
+    submitGuess.click();
   }
+});
+
+startGameButton.addEventListener('click', () => {
+  introductionPage.style.display = 'none';
+  gameContainer.style.display = 'block';
 });

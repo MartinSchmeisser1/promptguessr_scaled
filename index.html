@@ -36,17 +36,7 @@
     </div>
   </div>
 
-  <script>
-    const startGameButton = document.getElementById('startGame');
-    const introductionPage = document.getElementById('introduction-page');
-    const gameContainer = document.getElementById('game-container');
-
-    startGameButton.addEventListener('click', () => {
-      introductionPage.style.display = 'none';
-      gameContainer.style.display = 'block';
-      loadPrompt(currentPromptIndex); // Ensure the game starts by loading the first prompt
-    });
-  </script>
+  <script src="/socket.io/socket.io.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

@@ -4,7 +4,8 @@
   "description": "This is a small personal experiment to check out the current state of vibe-coding! That means to use as much AI as possible and to do as little as possible by hand.",
   "main": "script.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
