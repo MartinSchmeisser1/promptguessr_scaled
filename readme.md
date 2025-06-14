@@ -3,46 +3,50 @@ That means to use as much AI as possible and to do as little as possible by hand
 
 Let's see if I can create a small browser-based multiplayer-game with the help of AI :)
 
-Try it out here:
+Static version:
 'https://martinschmeisser1.github.io/promptguessr/'
+
+Multiplayer-version with synchronized game-state:
+'https://promptguessr.onrender.com/'
 
 # 🧠 Prompt Guessing Game
 
 ## 🎯 Overview
 
-**Prompt Guessing Game** is a small, browser-based web app where multiple users can see a **KI-generated image** and try to guess the **prompt** that generated it – one word at a time.
+**Prompt Guessing Game** is a web app where multiple users can see a KI-generated image and try to guess the prompt that generated it – one word at a time.
 
-It's designed to be lightweight, requires no login, backend, or database, and is hosted freely via **GitHub Pages**.
+It offers a synchronized multiplayer experience, allowing players to collaborate in real-time.
 
 ---
 
 ## 🕹️ Game Concept
 
-- The app displays a **pre-generated AI image**.
-- This image was created using a **prompt** (e.g., _"A giraffe sitting in a tree"_).
+- The app displays a **KI-generated AI image**.
+- This image was created using a **prompt**.
 - The prompt is split into individual words.
 - Players guess one word at a time:
-  - Correct guesses are revealed.
+  - Correct guesses are revealed to all players in real-time.
   - When all words are guessed, the next image appears.
-- The game is "pseudo-multiplayer": anyone who opens the page sees the same round (but there's no real-time sync or user accounts).
+- The game features synchronized multiplayer: anyone who opens the page sees the same round and can play together in real-time.
 
 ---
 
 ## 🧱 Tech Stack
 
-- **Frontend Only**: HTML, CSS, JavaScript
-- **Hosting**: GitHub Pages (Free)
-- **Backend**: None
+- **Frontend**: HTML, CSS, JavaScript
+- **Backend**: Node.js with Express and Socket.IO
+- **Hosting**: Render
 - **Storage**: Static files (images + prompts in JSON)
 
 ---
 
-## 📁 Project Structure (Example)
+## 📁 Project Structure
 
 /index.html
 /style.css
 /script.js
 /prompts.json
+/index.js
 /assets/
 image1.jpg
 image2.jpg
@@ -51,4 +55,4 @@ image2.jpg
 
 ## 🚀 Goal
 
-A simple, fun game to experiment with static web development, image-based prompts, and collaborative guessing — perfect for sharing with friends!
+A fun game to experiment with web development, image-based prompts, and collaborative guessing!
