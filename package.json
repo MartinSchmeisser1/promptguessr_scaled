@@ -1,0 +1,24 @@
+{
+  "name": "promptguessr_scaled",
+  "version": "1.0.0",
+  "description": "This is a small personal experiment to check out the current state of vibe-coding! That means to use as much AI as possible and to do as little as possible by hand.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MartinSchmeisser1/promptguessr_scaled.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MartinSchmeisser1/promptguessr_scaled/issues"
+  },
+  "homepage": "https://github.com/MartinSchmeisser1/promptguessr_scaled#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "socket.io": "^4.8.1"
+  }
+}

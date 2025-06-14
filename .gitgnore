@@ -1,0 +1,45 @@
+# Node.js modules
+/node_modules
+
+# Logs
+*.log
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.exn
+report.year.month.day.hour.minute.second.pid.tid.exn
+
+# Dependency directories
+jspm_packages/
+bower_components/
+
+# Optional files
+.env
+.DS_Store
+Thumbs.db
+
+# Build results
+/dist
+/build
+
+# IDE Specific
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Server configuration
+/config/secrets.js
+/config/privateKey.pem
+
+# Debug Files
+/debug
+
+# Temporary files
+/tmp
