@@ -72,7 +72,7 @@ function updateRevealedWords() {
   revealedWords.forEach((word, index) => {
     const span = document.createElement("span");
     if (word === "_") {
-      span.textContent = "_".repeat(word.length);
+      span.textContent = "__________"; // Display underscores based on word length
       span.classList.add("unrevealed-word");
     } else {
       span.textContent = word;
@@ -126,7 +126,7 @@ function displayWrongMessage() {
   // Add the message to the body
   document.body.appendChild(wrongMessage);
 
-  // Remove the message after 1 second
+  // Remove the image after 1 second
   setTimeout(() => {
     document.body.removeChild(wrongMessage);
   }, 1000);
